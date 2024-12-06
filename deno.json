@@ -1,0 +1,10 @@
+{
+  "tasks": {
+    "dev": "deno run --watch main.ts"
+  },
+  "imports": {
+    "@openapi-contrib/openapi-schema-to-json-schema": "npm:@openapi-contrib/openapi-schema-to-json-schema@^5.1.0",
+    "@std/assert": "jsr:@std/assert@1",
+    "webapi-parser": "npm:webapi-parser@^0.5.0"
+  }
+}

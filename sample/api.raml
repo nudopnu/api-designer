@@ -1,0 +1,46 @@
+#%RAML 1.0
+---
+title: Honey API
+baseUri: http://localhost:8080/{version}
+version: v1
+types:
+  RegisterRequest: !include types/RegisterRequest
+  LoginRequest: !include types/LoginRequest
+
+traits:
+  secured:
+    headers:
+      Authorization:
+        description: Bearer token for authorization.
+        type: string
+        required: true
+
+/register:
+  post:
+    description: |
+      Endpoint for registering new users.
+    body:
+      application/json:
+        type: RegisterRequest
+    responses:
+      200:
+        description: Registration successful.
+      400:
+        description: Invalid request.
+      500:
+        description: Internal server error.
+
+/login:
+  post:
+    description: |
+      Endpoint for login a user.
+    body: 
+      application/json:
+        type: LoginRequest
+    responses: 
+      200:
+        description: Registration successful.
+      400:
+        description: Invalid request.
+      500:
+        description: Internal server error.
