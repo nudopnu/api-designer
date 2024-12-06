@@ -10,7 +10,7 @@ async function main() {
   const CWD = Deno.cwd();
 
   const cueFiles: string[] = [];
-  for await (const dirEntry of walk(CWD)) {
+  for await (const dirEntry of walk(SRC_DIR)) {
     if (dirEntry.isFile && dirEntry.name.endsWith(".cue")) {
       cueFiles.push(dirEntry.path);
     }
@@ -21,7 +21,7 @@ async function main() {
   const dataTypesOas = await cueToOAS(cueFiles);
   const { schemas } = JSON.parse(dataTypesOas).components;
   await Object.entries(schemas).forEach(async ([key, value]) => {
-    const outFilePath = path.join(CWD, "types", key);
+    const outFilePath = path.join(TMP_DIR, key);
     const outFileContent = JSON.stringify(
       openapiSchemaToJsonSchema(value),
       null,
@@ -30,7 +30,11 @@ async function main() {
     await Deno.writeTextFile(outFilePath, outFileContent);
   });
 
-  // Parse RAML 1.0 file
+  // Parse copy of RAML 1.0 api definition file
+  await Deno.copyFile(
+    path.join(SRC_DIR, "api.raml"),
+    path.join(TMP_DIR, "api.raml")
+  );
   const inPath = path.join(CWD, "api.raml");
   let model = await WebApiParser.raml10.parse(`file://${inPath}`);
   model = await WebApiParser.raml10.resolve(model);
@@ -41,21 +45,24 @@ async function main() {
     });
   }
 
-  const outPath = path.join(CWD, "../out/openapi.json");
+  const outPath = path.join(OUT_DIR, "openapi.json");
   console.log("Generating file to:", outPath);
 
   // Generate file with changed OAS 3.0 content
   await WebApiParser.oas30.generateFile(model, `file://${outPath}`);
 }
 
-const relativePath = Deno.args[0] || ".";
-Deno.chdir(relativePath);
-await main();
-const log = debounce(async () => {
-  await main();
-}, 1500);
+const TMP_DIR = path.join(import.meta.dirname!, "tmp");
+const OUT_DIR = path.join(import.meta.dirname!, "out");
+const SRC_DIR = await Deno.realPath(Deno.args[0] || ".");
+Deno.chdir(TMP_DIR);
 
-const watcher = Deno.watchFs("./");
+await main();
+const update = debounce(async () => {
+  await main();
+}, 200);
+
+const watcher = Deno.watchFs(SRC_DIR);
 for await (const _ of watcher) {
-  log();
+  update();
 }

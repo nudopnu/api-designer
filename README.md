@@ -12,3 +12,14 @@ This is a prototype for automatically generating an [OpenAPI Specification, OAS]
 ```bash
 deno -A main.ts sample
 ```
+
+## Show result in browser
+
+```bash
+MSYS_NO_PATHCONV=1 docker run \
+    --rm \
+    -p 8080:8080 \
+    -e SWAGGER_JSON=/app/openapi.json \
+    -v $(pwd)/out:/app \
+    swaggerapi/swagger-ui
+```

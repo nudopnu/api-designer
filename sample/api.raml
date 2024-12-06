@@ -1,11 +1,13 @@
 #%RAML 1.0
 ---
-title: Honey API
-baseUri: http://localhost:8080/{version}
+title: Sample API
+description: This is a sample API
 version: v1
+baseUri: http://localhost:3000/{version}
 types:
-  RegisterRequest: !include types/RegisterRequest
-  LoginRequest: !include types/LoginRequest
+  RegisterRequest: !include RegisterRequest
+  LoginRequest: !include LoginRequest
+  User: !include User
 
 traits:
   secured:
@@ -25,6 +27,9 @@ traits:
     responses:
       200:
         description: Registration successful.
+        body:
+          application/json:
+            type: User
       400:
         description: Invalid request.
       500:
@@ -39,7 +44,7 @@ traits:
         type: LoginRequest
     responses: 
       200:
-        description: Registration successful.
+        description: Login successful.
       400:
         description: Invalid request.
       500:
