@@ -22,11 +22,9 @@ async function main() {
   const { schemas } = JSON.parse(dataTypesOas).components;
   await Object.entries(schemas).forEach(async ([key, value]) => {
     const outFilePath = path.join(TMP_DIR, key);
-    const outFileContent = JSON.stringify(
-      openapiSchemaToJsonSchema(value),
-      null,
-      "\t"
-    );
+    const jsonSchema = openapiSchemaToJsonSchema(value);
+    jsonSchema.additionalProperties = false;
+    const outFileContent = JSON.stringify(jsonSchema, null, "\t");
     await Deno.writeTextFile(outFilePath, outFileContent);
   });
 

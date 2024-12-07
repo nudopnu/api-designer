@@ -1,4 +1,4 @@
-#LoginRequest: close({
+#LoginRequest: {
     username!: string
     password!: string
-})
+}

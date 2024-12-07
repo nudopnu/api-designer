@@ -1,0 +1,54 @@
+<!-- same as the original one but extended with a polling update feature -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Swagger UI</title>
+    <link rel="stylesheet" type="text/css" href="./swagger-ui.css" />
+    <link rel="stylesheet" type="text/css" href="index.css" />
+    <link rel="icon" type="image/png" href="./favicon-32x32.png" sizes="32x32" />
+    <link rel="icon" type="image/png" href="./favicon-16x16.png" sizes="16x16" />
+  </head>
+
+  <body>
+    <div id="swagger-ui"></div>
+    <script src="./swagger-ui-bundle.js" charset="UTF-8"> </script>
+    <script src="./swagger-ui-standalone-preset.js" charset="UTF-8"> </script>
+    <script src="./swagger-initializer.js" charset="UTF-8"> </script>
+    <script>
+        window.onload = function() {
+            const ui = SwaggerUIBundle({
+                url: "/openapi.json",
+                dom_id: '#swagger-ui',
+                deepLinking: true,
+                presets: [
+                    SwaggerUIBundle.presets.apis,
+                    SwaggerUIStandalonePreset
+                ],
+                layout: "StandaloneLayout"
+            });
+
+            // Auto-reloading logic
+            const pollInterval = 2000; // Check every 2 seconds
+            setInterval(() => {
+                fetch('/openapi.json', { cache: 'no-cache' })
+                    .then(response => response.json())
+                    .then(newSpec => {
+                        if (!window.swaggerSpec) {
+                            window.swaggerSpec = newSpec;
+                        }
+                        if (JSON.stringify(newSpec) !== JSON.stringify(window.swaggerSpec)) {
+                            console.log("specs changed!");
+                            console.log(window.swaggerSpec, newSpec);
+                            window.swaggerSpec = newSpec;
+                            location.reload(); // Reload the page if the spec changes
+                        }
+                    })
+                    .catch(err => console.error('Error checking for spec changes:', err));
+            }, pollInterval);
+
+            window.ui = ui;
+        };
+    </script>
+  </body>
+</html>

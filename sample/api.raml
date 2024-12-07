@@ -16,6 +16,12 @@ traits:
         description: Bearer token for authorization.
         type: string
         required: true
+  error-prone:
+    responses: 
+      400:
+        description: Invalid request.
+      500:
+        description: Internal server error.
 
 /register:
   post:
@@ -30,10 +36,7 @@ traits:
         body:
           application/json:
             type: User
-      400:
-        description: Invalid request.
-      500:
-        description: Internal server error.
+    is: [error-prone]
 
 /login:
   post:
@@ -45,7 +48,4 @@ traits:
     responses: 
       200:
         description: Login successful.
-      400:
-        description: Invalid request.
-      500:
-        description: Internal server error.
+    is: [error-prone]
