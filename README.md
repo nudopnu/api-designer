@@ -15,7 +15,7 @@ deno -A main.ts sample
 
 _Important note:_
 
-As discussed [here](https://github.com/cue-lang/cue/issues/267#issuecomment-873386839), specifying a closed struct in CUE does not automatically create an `"additionalProperties": false` flag. I injected this as a manual modification step afterwards.
+As discussed [here](https://github.com/cue-lang/cue/issues/267#issuecomment-873386839), specifying a closed struct in CUE does not automatically create an `"additionalProperties": false` flag. I injected this as a modification step afterwards.
 
 ## Show result in browser
 
