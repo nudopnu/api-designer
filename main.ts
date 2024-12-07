@@ -62,5 +62,9 @@ const update = debounce(async () => {
 
 const watcher = Deno.watchFs(SRC_DIR);
 for await (const _ of watcher) {
-  update();
+  try {
+    update();
+  } catch (error) {
+    console.error(error);
+  }
 }

@@ -3,11 +3,12 @@
 title: Sample API
 description: This is a sample API
 version: v1
-baseUri: http://localhost:3000/{version}
+baseUri: http://localhost:8081/api/{version}
 types:
   RegisterRequest: !include RegisterRequest
   LoginRequest: !include LoginRequest
   User: !include User
+  Account: !include Account
 
 traits:
   secured:
@@ -48,4 +49,7 @@ traits:
     responses: 
       200:
         description: Login successful.
+        body:
+          application/json:
+            type: Account
     is: [error-prone]
